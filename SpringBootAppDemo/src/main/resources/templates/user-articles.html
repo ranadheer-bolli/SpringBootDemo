@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+
+    <title>ARTICLES</title>
+
+</head>
+
+<body class="container">
+<br>
+<div>
+    <a th:href="@{/articles/}"/>
+    <h6> <- GO TO ARTICLES PAGE </h6>
+    </a>
+</div>
+
+<div align="right">
+    <form th:action="@{/logout}"
+          method="POST">
+        <input type="submit" value="Logout" class="btn btn-warning"/>
+    </form>
+</div>
+
+
+<form th:action="@{/articles/page}"
+      method="GET">
+    <input class="btn btn-success" type="submit" value="ADD A NEW POST"/>
+</form>
+<br>
+<table class="table table-bordered table-striped">
+    <tr>
+        <th>TITLE</th>
+        <th>ARTICLE</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr th:each="tempArticle : ${articles}">
+        <td>
+            <a th:href="@{/articles/post/{title}(title = ${tempArticle.title})}">
+                <span th:text="${tempArticle.title}"></span>
+            </a>
+        </td>
+        <td th:text="${tempArticle.article}"/>
+    </tr>
+    </tbody>
+</table>
+
+<div th:if="${totalPages > 1} ">
+    <div class="row col-sm-10" align="center">
+        <div class="col-sm-1">
+            <a th:if="${currentPage > 1}" th:href="@{'/articles/page/' + ${1}}"> << </a>
+            <span th:unless="${currentPage > 1 }"> << </span>
+        </div>
+
+        <div class="col-sm-1">
+            <a th:if="${currentPage >1 }" th:href="@{'/articles/page/' + ${currentPage - 1}}"> < </a>
+            <span th:unless="${currentPage > 1}"> < </span>
+        </div>
+
+        <div class="col-sm-1">
+					<span th:each="i: ${#numbers.sequence(1, totalPages)}">
+						<span th:unless="${currentPage != i}">[[${i}]]</span>  &nbsp; &nbsp;
+					</span>
+        </div>
+
+
+        <div class="col-sm-1">
+            <a th:if="${currentPage < totalPages}" th:href="@{'/articles/page/' + ${currentPage + 1}}"> > </a>
+            <span th:unless="${currentPage < totalPages}"> > </span>
+        </div>
+
+        <div class="col-sm-1">
+            <a th:if="${currentPage < totalPages}" th:href="@{'/articles/page/' + ${totalPages}}">>></a>
+            <span th:unless="${currentPage < totalPages}">>></span>
+        </div>
+    </div>
+</div>
+
+</div>
+
+</body>
+</html>

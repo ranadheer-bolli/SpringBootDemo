@@ -1,0 +1,118 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <style>
+p{
+  width: 1000px;
+  height: 200px;
+   border: 1px solid black;
+  padding: 30px;
+  margin: 7px;
+}
+    </style>
+<body>
+<br>
+<div class="container">
+    <div>
+        <a th:href="@{/articles/}">
+            <h6><- GO TO ARTICLES PAGE</h6>
+        </a>
+    </div>
+    <div align="right">
+        <form th:action="@{/logout}"
+              method="POST">
+            <input type="submit" value="Logout" class="btn btn-warning"/>
+        </form>
+    </div>
+        <div align="center">
+            <h3 th:text="${Article.getTitle}"></h3>
+        </div>
+        <h3>
+            <B th:text="${Article.getUserId.getUserName}"></B>
+        </h3>
+        <div class="form-group">
+               <p th:text="${Article.getArticle}"/>
+        </div>
+
+    <div th:if="${Article.getUserId.getId==User.id}" align="center">
+        <form th:action="@{/articles/form/{id}(id=${Article.id})}"
+              method="GET">
+            <input type="submit" value="Update" class="btn btn-primary" style="float:left;"/>
+        </form>
+        <form th:action="@{/articles/delete/{id}(id=${Article.id})}"
+              method="DELETE">
+            <input type="submit" value="Delete" class="btn btn-danger"/>
+        </form>
+        <br>
+    </div>
+    <B>Comment</B>
+    <form th:action="@{/comment/add/{title}(title = ${Article.title})}" th:object="${Comment}" method="POST">
+        <div class="form-group">
+            <input class="form-control input-sm" id="inputlg" type="text" th:field="*{comment}" required
+                   placeholder="Add your comment"/>
+        </div>
+        <input type="submit" value="Submit" class="btn btn-success"/>
+    </form>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>USER</th>
+            <th>COMMENT</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <div th:if="${Article.getUserId.getId==User.id}">
+            <tr th:each="tempComment : ${comments}">
+                <b>
+                    <h3>
+                        <td th:text="${tempComment.getUserId.getUserName}"/>
+                    </h3>
+                </b>
+                <td th:text="${tempComment.comment}"/>
+                <td>
+                        <form th:action="@{/comment/delete/{id}(id=${tempComment.id})}" th:object="${Comment}"
+                              method="DELETE">
+                            <input type="submit" value="Delete" class="btn btn-danger"/>
+                        </form>
+                </td>
+            </tr>
+        </div>
+    <div th:unless="${Article.getUserId.getId==User.id}">
+        <tr th:each="tempComment : ${comments}">
+            <b>
+                <h3>
+                    <td th:text="${tempComment.getUserId.getUserName}"/>
+                </h3>
+            </b>
+            <td th:text="${tempComment.comment}"/>
+            <td>
+
+                <div th:if="${tempComment.getUserId.getId==User.id}">
+                    <form th:action="@{/comment/delete/{id}(id=${tempComment.id})}" th:object="${Comment}"
+                          method="DELETE">
+                        <input type="submit" value="Delete" class="btn btn-danger"/>
+                    </form>
+                </div>
+            </td>
+        </tr>
+    </div>
+        </tbody>
+    </table>
+</div>
+
+
+</div>
+
+
+</body>
+</html>
