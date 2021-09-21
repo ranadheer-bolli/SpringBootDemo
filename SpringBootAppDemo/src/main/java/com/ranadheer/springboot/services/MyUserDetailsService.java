@@ -22,21 +22,24 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
 
-    public void save(User user) throws Exception {
+    public void save(User user){
         Optional<User> user1 = userRepository.findByUserName(user.getUserName());
         if(user1.isEmpty()){
             userRepository.save(user);
         }
         else {
-            throw new Exception("USER ALREADY EXISTS");
+            throw new UsernameNotFoundException("USER ALREADY EXISTS");
         }
     }
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         Optional<User> user = userRepository.findByUserName(s);
-        System.out.println(user);
-        user.orElseThrow(()->new UsernameNotFoundException("USER DOESN'T EXIST"));
-        return user.map(MyUserDetails::new).get();
+       if(!user.isPresent())
+           throw new UsernameNotFoundException("USER DOESN'T EXIST");
+        if(user.isPresent()) {
+            return user.map(MyUserDetails::new).get();
+        }
+        return new MyUserDetails();
     }
 }

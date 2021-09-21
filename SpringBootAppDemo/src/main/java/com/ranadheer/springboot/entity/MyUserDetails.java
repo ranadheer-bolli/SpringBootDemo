@@ -28,6 +28,8 @@ public class MyUserDetails implements UserDetails {
         this.userName=user.getUserName();
     }
 
+    public MyUserDetails() {
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

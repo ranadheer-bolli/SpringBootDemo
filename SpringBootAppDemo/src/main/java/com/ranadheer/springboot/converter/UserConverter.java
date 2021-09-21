@@ -13,12 +13,14 @@ public class UserConverter {
     public UserDTO entityToDto(Optional<User> user)
     {
         UserDTO userDto =new UserDTO();
-        userDto.setId(user.get().getId());
-        userDto.setUserName(user.get().getUserName());
-        userDto.setEmail(user.get().getEmail());
-        userDto.setArticleList(user.get().getArticleList());
-        userDto.setPhoneNo(user.get().getPhoneNo());
-        userDto.setRoleList(user.get().getRoles());
+        if(user.isPresent()) {
+            userDto.setId(user.get().getId());
+            userDto.setUserName(user.get().getUserName());
+            userDto.setEmail(user.get().getEmail());
+            userDto.setArticleList(user.get().getArticleList());
+            userDto.setPhoneNo(user.get().getPhoneNo());
+            userDto.setRoleList(user.get().getRoles());
+        }
         return userDto;
     }
 
@@ -34,7 +36,7 @@ public class UserConverter {
         return userDto;
     }
 
-    public User DTOtoEntity(UserDTO userDTO){
+    public User dtoToEntity(UserDTO userDTO){
         User user = new User();
         user.setId(userDTO.getId());
         user.setUserName(userDTO.getUserName());
@@ -47,11 +49,12 @@ public class UserConverter {
 
     public List<UserDTO> entityToDto(List<User> users)
     {
-        return users.stream().map(x->entityToDto(x)).collect(Collectors.toList());
+        return users.stream().map(
     }
 
     public List<User> dtoToEntity(List<UserDTO> userDtos)
     {
-        return userDtos.stream().map(x->DTOtoEntity(x)).collect(Collectors.toList());
+        return userDtos.stream().map(x->dtoToEntity(x)).collect(Collectors.toList());
+        //.collect(Collectors.toList());
     }
 }
