@@ -10,7 +10,6 @@ import com.ranadheer.springboot.services.ArticlesService;
 import com.ranadheer.springboot.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
@@ -41,7 +40,6 @@ public class CommentController {
     @PostMapping("/add/{title}")
     public String addComment(@ModelAttribute("Comment") CommentDTO commentDTO, @PathVariable String title){
         Comment comment = commentConverter.dtoToEntity(commentDTO);
-        try {
           Article article = commentService.findArticle(title);
             // to add  comment to article
             article.addComment(comment);
@@ -54,9 +52,5 @@ public class CommentController {
                 commentService.addComment(comment);
             });
             return "redirect:/articles/post/"+title;
-        }
-        catch (Exception e){
-           throw new UsernameNotFoundException("User Doesnt Exist");
-        }
     }
 }

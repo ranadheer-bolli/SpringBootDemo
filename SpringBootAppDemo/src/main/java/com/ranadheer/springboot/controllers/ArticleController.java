@@ -14,7 +14,6 @@ import com.ranadheer.springboot.services.ArticlesService;
 import com.ranadheer.springboot.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -102,7 +101,6 @@ public class ArticleController {
 
     @GetMapping("/post/{title}")
     public String display(@PathVariable String title,Model model){
-        try {
             String name = SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<User> user = articlesService.findUser(name);
             UserDTO userDTO = userConverter.entityToDto(user);
@@ -122,11 +120,6 @@ public class ArticleController {
             model.addAttribute(htmlArticle, articleDTO);
             model.addAttribute("comments", commentDTOList);
             return "post";
-        }
-        catch (Exception e){
-            throw new ResourceNotFoundException("No post available");
-        }
-
     }
 
     @GetMapping("/userpost/{title}")
