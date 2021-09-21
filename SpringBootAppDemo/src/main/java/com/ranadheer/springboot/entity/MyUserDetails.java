@@ -1,6 +1,7 @@
 package com.ranadheer.springboot.entity;
 
 import com.ranadheer.springboot.repository.UserRepository;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
+@Data
 public class MyUserDetails implements UserDetails {
 
     private User user;

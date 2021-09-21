@@ -35,12 +35,11 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) {
-        Optional<User> user = userRepository.findByUserName(s);
-        if(user.isPresent()){
-          return user.map(MyUserDetails::new).get();
-       }
-        else{
-            throw new UsernameNotFoundException("USER DOESN'T EXIST");
-        }
+          Optional<User> user = userRepository.findByUserName(s);
+          if(!user.isPresent())
+           throw new UsernameNotFoundException("USER DOESN'T EXIST");
+          MyUserDetails userDetails = new MyUserDetails();
+          userDetails.setUser(user.get());
+          return userDetails;
     }
 }
