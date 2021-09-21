@@ -4,6 +4,7 @@ import com.ranadheer.springboot.entity.MyUserDetails;
 import com.ranadheer.springboot.entity.User;
 import com.ranadheer.springboot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,17 +29,18 @@ public class MyUserDetailsService implements UserDetailsService {
             userRepository.save(user);
         }
         else {
-            throw new UsernameNotFoundException("USER ALREADY EXISTS");
+            throw new BadCredentialsException("Invalid Credentials");
         }
     }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String s) {
         Optional<User> user = userRepository.findByUserName(s);
        if(!user.isPresent())
            throw new UsernameNotFoundException("USER DOESN'T EXIST");
         if(user.isPresent()) {
-            return user.map(MyUserDetails::new).get();
+            UserDetails userDetails = user.map(MyUserDetails::new).get();
+            return userDetails;
         }
         return new MyUserDetails();
     }

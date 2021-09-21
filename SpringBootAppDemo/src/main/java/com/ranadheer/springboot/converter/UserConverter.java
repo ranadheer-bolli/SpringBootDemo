@@ -49,7 +49,7 @@ public class UserConverter {
 
     public List<UserDTO> entityToDto(List<User> users)
     {
-        return users.stream().map(
+        return users.stream().map(x->entityToDto(x)).collect(Collectors.toList());
     }
 
     public List<User> dtoToEntity(List<UserDTO> userDtos)

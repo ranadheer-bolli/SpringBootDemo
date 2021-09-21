@@ -40,7 +40,7 @@ public class RegisterController {
         Role role = new Role();
         role.setName("USER");
         role.setId(2);
-        User user = userConverter.DTOtoEntity(userDTO);
+        User user = userConverter.dtoToEntity(userDTO);
         user.addRole(role);
         userDetailsService.save(user);
         return "redirect:/showLoginPage";
