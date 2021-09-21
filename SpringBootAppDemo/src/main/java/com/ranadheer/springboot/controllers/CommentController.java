@@ -29,7 +29,7 @@ public class CommentController {
     @Autowired
     private CommentConverter commentConverter;
 
-    @RequestMapping(value = "/delete/{id}", method = {RequestMethod.DELETE,RequestMethod.GET})
+    @RequestMapping(value = "/delete/{id}", method = {RequestMethod.GET})
     public String delete(@PathVariable int id) throws Exception{
         Comment comment = commentService.getComment(id);
         String title = comment.getArticleId().getTitle();

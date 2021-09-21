@@ -1,4 +1,4 @@
-package com.ranadheer.springboot.Rest;
+package com.ranadheer.springboot.rest;
 
 import com.ranadheer.springboot.dto.ArticleDTO;
 import com.ranadheer.springboot.dto.CommentDTO;

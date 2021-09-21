@@ -49,7 +49,7 @@ public class ArticleController {
     }
 
    // @DeleteMapping(value = "/delete/{id}")
-    @RequestMapping(value = "/delete/{id}", method = {RequestMethod.GET,RequestMethod.DELETE})
+    @RequestMapping(value = "/delete/{id}", method = {RequestMethod.GET})
     public String delete(@PathVariable int id){
         articlesService.delete(id);
         return "redirect:/articles/";
@@ -62,25 +62,24 @@ public class ArticleController {
     }
 
     @RequestMapping(value = "/form", method = RequestMethod.POST)
-    public String addArticle(@ModelAttribute("Article") ArticleDTO articledto) throws Exception{
+    public String addArticle(@ModelAttribute("Article") ArticleDTO articledto){
         Article article = articleConverter.dtoToEntity(articledto);
-        try {
             String name = SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<User> user = articlesService.findUser(name);
+            if(user.isPresent()){
             user.ifPresent(user1 -> {
                 user1.add(article);
             });
             articlesService.addArticle(article);
             return "redirect:/articles/userpost/"+article.getTitle();
-        }
-        catch (Exception e){
-            System.out.println(article+"-------------------"+e);
-        }
-        return "redirect:/articles/";
+           }
+            else{
+                throw new RuntimeException("User Does not exist");
+            }
     }
 
     @GetMapping("/form/{id}")
-    public String update(Model model,@PathVariable int id)  throws Exception{
+    public String update(Model model,@PathVariable int id){
         try {
             Article article = articlesService.get(id);
             ArticleDTO articleDTO = articleConverter.entityToDto(article);

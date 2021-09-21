@@ -28,7 +28,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .authorizeRequests()
                 .antMatchers("/**").authenticated()
-                .antMatchers("/articles/user").hasRole("USER")
                 .and()
                 .formLogin()
                 .loginPage("/showLoginPage")
@@ -38,7 +37,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .logout().permitAll()
                 .and()
-                .csrf().disable()
                 .cors()
                 .and()
                 .sessionManagement()
