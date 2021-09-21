@@ -69,16 +69,13 @@ public class ArticleController {
         Article article = articleConverter.dtoToEntity(articledto);
             String name = SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<User> user = articlesService.findUser(name);
-            if(user.isPresent()){
-            user.ifPresent(user1 -> {
-                user1.add(article);
-                articlesService.addArticle(article);
-            });
-            return "redirect:/articles/userpost/"+article.getTitle();
-           }
-            else{
-                throw new UsernameNotFoundException("User Does not exist");
+            if(user.isPresent()) {
+                user.ifPresent(user1 -> {
+                    user1.add(article);
+                    articlesService.addArticle(article);
+                });
             }
+            return "redirect:/articles/userpost/"+article.getTitle();
     }
 
     @GetMapping("/form/{id}")
