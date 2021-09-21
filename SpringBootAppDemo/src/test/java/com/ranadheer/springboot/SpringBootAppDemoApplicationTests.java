@@ -72,7 +72,7 @@ class SpringBootAppDemoApplicationTests {
 		Comment comment = new Comment("excellent article");
 		Mockito.when(mockCommentRepo.save(comment)).thenReturn(comment);
 		Comment comment1 = commentService.addComment(comment);
-		assertThat(comment1.getComment()).isNotNull();
+		assertThat(comment1.getContent()).isNotNull();
 	}
 
 

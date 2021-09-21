@@ -12,7 +12,7 @@ public class CommentConverter {
     public CommentDTO entityToDto(Comment comment)
     {
         CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setComment(comment.getComment());
+        commentDTO.setComment(comment.getContent());
         commentDTO.setId(comment.getId());
         commentDTO.setUserId(comment.getUserId());
         commentDTO.setArticleId(comment.getArticleId());
@@ -23,7 +23,7 @@ public class CommentConverter {
     {
         Comment comment = new Comment();
         comment.setUserId(commentDTO.getUserId());
-        comment.setComment(commentDTO.getComment());
+        comment.setContent(commentDTO.getComment());
         comment.setArticleId(commentDTO.getArticleId());
         comment.setId(commentDTO.getId());
         return comment;

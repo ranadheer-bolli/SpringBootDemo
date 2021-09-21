@@ -14,7 +14,9 @@ import com.ranadheer.springboot.services.ArticlesService;
 import com.ranadheer.springboot.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,8 +50,10 @@ public class ArticleController {
         return findPaginated(1,model);
     }
 
+    String htmlArticle = "ARTICLE";
+
    // @DeleteMapping(value = "/delete/{id}")
-    @RequestMapping(value = "/delete/{id}", method = {RequestMethod.GET})
+    @GetMapping("/delete/{id}")
     public String delete(@PathVariable int id){
         articlesService.delete(id);
         return "redirect:/articles/";
@@ -57,11 +61,11 @@ public class ArticleController {
 
     @GetMapping("/page")
     public String open(Model model){
-        model.addAttribute("Article",new ArticleDTO());
+        model.addAttribute( htmlArticle ,new ArticleDTO());
         return "new-article";
     }
 
-    @RequestMapping(value = "/form", method = RequestMethod.POST)
+    @PostMapping("/form")
     public String addArticle(@ModelAttribute("Article") ArticleDTO articledto){
         Article article = articleConverter.dtoToEntity(articledto);
             String name = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -69,12 +73,12 @@ public class ArticleController {
             if(user.isPresent()){
             user.ifPresent(user1 -> {
                 user1.add(article);
+                articlesService.addArticle(article);
             });
-            articlesService.addArticle(article);
             return "redirect:/articles/userpost/"+article.getTitle();
            }
             else{
-                throw new RuntimeException("User Does not exist");
+                throw new UsernameNotFoundException("User Does not exist");
             }
     }
 
@@ -85,12 +89,9 @@ public class ArticleController {
             ArticleDTO articleDTO = articleConverter.entityToDto(article);
             String name = SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<User> user = articlesService.findUser(name);
-            if(user.isPresent()) {
-                if (user.get().getId() != article.getUserId().getId()) {
+            if(user.isPresent() && (user.get().getId() != article.getUserId().getId()))
                     return "access-denied";
-                }
-            }
-            model.addAttribute("Article", articleDTO);
+            model.addAttribute( htmlArticle, articleDTO);
             return "update-article";
         }
         catch (Exception e){
@@ -100,31 +101,32 @@ public class ArticleController {
 
 
     @GetMapping("/post/{title}")
-    public String display(@PathVariable String title,Model model) throws Exception{
+    public String display(@PathVariable String title,Model model){
         try {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        Optional<User> user = articlesService.findUser(name);
-        UserDTO userDTO = userConverter.entityToDto(user);
-        List<Role> roleList = userDTO.getRoleList();
-        for(Role role:roleList){
-            if(role.getName().equals("USER")){
-                return displayUserPost(title,model);
+            String name = SecurityContextHolder.getContext().getAuthentication().getName();
+            Optional<User> user = articlesService.findUser(name);
+            UserDTO userDTO = userConverter.entityToDto(user);
+            List<Role> roleList = userDTO.getRoleList();
+            for (Role role : roleList) {
+                if (role.getName().equals("USER")) {
+                    return displayUserPost(title, model);
+                }
             }
-        }
-        Article article = commentService.findArticle(title);
-        ArticleDTO articleDTO = articleConverter.entityToDto(article);
-        List<Comment> comments = article.getCommentList();
-        List<CommentDTO> commentDTOList = commentConverter.entityToDto(comments);
+            Article article = commentService.findArticle(title);
+            ArticleDTO articleDTO = articleConverter.entityToDto(article);
+            List<Comment> comments = article.getCommentList();
+            List<CommentDTO> commentDTOList = commentConverter.entityToDto(comments);
 
-        model.addAttribute("User",userDTO);
-        model.addAttribute("Comment",new CommentDTO());
-        model.addAttribute("Article",articleDTO);
-        model.addAttribute("comments",commentDTOList);
-        return "post";
-    }
-        catch (Exception e){
-            return "page";
+            model.addAttribute("User", userDTO);
+            model.addAttribute("Comment", new CommentDTO());
+            model.addAttribute(htmlArticle, articleDTO);
+            model.addAttribute("comments", commentDTOList);
+            return "post";
         }
+        catch (Exception e){
+            throw new ResourceNotFoundException("No post available");
+        }
+
     }
 
     @GetMapping("/userpost/{title}")
@@ -138,7 +140,7 @@ public class ArticleController {
         UserDTO userDTO = userConverter.entityToDto(user);
         model.addAttribute("User",userDTO);
         model.addAttribute("Comment",new CommentDTO());
-        model.addAttribute("Article",articleDTO);
+        model.addAttribute(htmlArticle,articleDTO);
         model.addAttribute("comments",commentDTOList);
         return "user-post";
     }

@@ -16,6 +16,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     // AUTHENTICATION
+    @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{
         // provides user details using username
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();

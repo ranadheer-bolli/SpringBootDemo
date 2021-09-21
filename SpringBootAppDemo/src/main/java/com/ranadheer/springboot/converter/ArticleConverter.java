@@ -13,7 +13,7 @@ public class ArticleConverter {
     {
         ArticleDTO articleDTO = new ArticleDTO();
         articleDTO.setId(article.getId());
-        articleDTO.setArticle(article.getArticle());
+        articleDTO.setArticle(article.getContent());
         articleDTO.setTitle(article.getTitle());
         articleDTO.setCommentList(article.getCommentList());
         articleDTO.setUserId(article.getUserId());
@@ -23,7 +23,7 @@ public class ArticleConverter {
     public Article dtoToEntity(ArticleDTO articleDTO){
         Article article = new Article();
         article.setId(articleDTO.getId());
-        article.setArticle(articleDTO.getArticle());
+        article.setContent(articleDTO.getArticle());
         article.setTitle(articleDTO.getTitle());
         article.setCommentList(articleDTO.getCommentList());
         article.setUserId(articleDTO.getUserId());

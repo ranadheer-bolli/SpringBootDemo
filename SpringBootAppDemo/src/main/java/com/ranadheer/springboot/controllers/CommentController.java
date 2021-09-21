@@ -10,6 +10,7 @@ import com.ranadheer.springboot.services.ArticlesService;
 import com.ranadheer.springboot.services.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
@@ -29,16 +30,16 @@ public class CommentController {
     @Autowired
     private CommentConverter commentConverter;
 
-    @RequestMapping(value = "/delete/{id}", method = {RequestMethod.GET})
-    public String delete(@PathVariable int id) throws Exception{
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable int id){
         Comment comment = commentService.getComment(id);
         String title = comment.getArticleId().getTitle();
         commentService.delete(id);
         return "redirect:/articles/post/"+title;
     }
 
-    @RequestMapping(value = "/add/{title}", method = RequestMethod.POST)
-    public String addComment(@ModelAttribute("Comment") CommentDTO commentDTO, @PathVariable String title) throws Exception{
+    @PostMapping("/add/{title}")
+    public String addComment(@ModelAttribute("Comment") CommentDTO commentDTO, @PathVariable String title){
         Comment comment = commentConverter.dtoToEntity(commentDTO);
         try {
           Article article = commentService.findArticle(title);
@@ -49,14 +50,13 @@ public class CommentController {
             user.ifPresent(user1 -> {
                 // add comment to user
                 comment.setUserId(user1);
+                // to save into database
+                commentService.addComment(comment);
             });
-          // to save into database
-          commentService.addComment(comment);
             return "redirect:/articles/post/"+title;
         }
         catch (Exception e){
-            System.out.println(comment+"-------------------"+e);
+           throw new UsernameNotFoundException("User Doesnt Exist");
         }
-        return "redirect:/articles/";
     }
 }

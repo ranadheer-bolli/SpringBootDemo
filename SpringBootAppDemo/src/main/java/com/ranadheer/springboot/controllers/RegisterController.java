@@ -34,7 +34,7 @@ public class RegisterController {
     }
 
     @PostMapping("/processRegistrationForm")
-    public String process(@ModelAttribute("UserDTO") UserDTO userDTO) throws Exception {
+    public String process(@ModelAttribute("UserDTO") UserDTO userDTO){
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
         Role role = new Role();

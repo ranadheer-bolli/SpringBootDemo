@@ -51,8 +51,7 @@ public class ArticlesServiceImpl implements ArticlesService {
     @Override
     @Transactional
     public Article addArticle(Article article) {
-           Article article1=articleRepository.save(article);
-           return article1;
+           return articleRepository.save(article);
     }
 
     @Override
@@ -62,7 +61,7 @@ public class ArticlesServiceImpl implements ArticlesService {
 
     @Override
     public Page<Article> findPaginated(int pageNo, int pageSIze) {
-        Pageable pageable = (Pageable) PageRequest.of(pageNo-1,pageSIze);
+        Pageable pageable = PageRequest.of(pageNo-1,pageSIze);
         return this.articleRepository.findAll(pageable);
     }
 

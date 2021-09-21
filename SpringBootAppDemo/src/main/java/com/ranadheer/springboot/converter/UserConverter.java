@@ -55,6 +55,5 @@ public class UserConverter {
     public List<User> dtoToEntity(List<UserDTO> userDtos)
     {
         return userDtos.stream().map(x->dtoToEntity(x)).collect(Collectors.toList());
-        //.collect(Collectors.toList());
     }
 }

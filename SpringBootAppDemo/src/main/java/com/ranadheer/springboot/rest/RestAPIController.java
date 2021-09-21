@@ -46,14 +46,14 @@ public class RestAPIController {
         return ("DELETED THE ARTICLE WITH ID = " + id);
     }
     @PostMapping(value = "/article/add")
-    public Article addArticle(@ModelAttribute("Article") ArticleDTO articledto) throws Exception {
+    public Article addArticle(@ModelAttribute("Article") ArticleDTO articledto){
         Article article = articleConverter.dtoToEntity(articledto);
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
         Optional<User> user = articlesService.findUser(name);
         user.ifPresent(user1 -> {
             user1.add(article);
+            articlesService.addArticle(article);
         });
-        articlesService.addArticle(article);
         return article;
     }
 
@@ -64,8 +64,8 @@ public class RestAPIController {
         Optional<User> user = articlesService.findUser(name);
         user.ifPresent(user1 -> {
             user1.add(article);
+            articlesService.update(article);
         });
-        articlesService.update(article);
         return article;
     }
 
@@ -83,15 +83,13 @@ public class RestAPIController {
             user.ifPresent(user1 -> {
                 // add comment to user
                 comment.setUserId(user1);
+                // to save into database
+                commentService.addComment(comment);
             });
-            // to save into database
-            commentService.addComment(comment);
             return comment;
     }
     @DeleteMapping("comment/{id}")
-    public String deleteComment(@PathVariable int id) throws Exception{
-        Comment comment = commentService.getComment(id);
-        String title = comment.getArticleId().getTitle();
+    public String deleteComment(@PathVariable int id){
         commentService.delete(id);
         return ("DELETED THE COMMENT WITH ID = " + id);
     }

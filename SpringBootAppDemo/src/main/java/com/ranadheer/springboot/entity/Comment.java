@@ -16,7 +16,7 @@ public class Comment {
     private int id;
 
     @Column(nullable = false,name = "comment")
-    private String comment;
+    private String content;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.REFRESH,
             CascadeType.MERGE,
@@ -36,8 +36,8 @@ public class Comment {
     public Comment() {
     }
 
-    public Comment(String comment) {
-        this.comment = comment;
+    public Comment(String content) {
+        this.content = content;
     }
 
 

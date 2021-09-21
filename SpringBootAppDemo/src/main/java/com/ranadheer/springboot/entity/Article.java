@@ -22,7 +22,7 @@ public class Article {
     private int id;
 
     @Column(name = "article")
-    private String article;
+    private String content;
 
     @Column(name = "title")
     private String title;
@@ -43,8 +43,8 @@ public class Article {
 
 
     public Article(){}
-    public Article(String article,String title) {
-        this.article = article;
+    public Article(String content, String title) {
+        this.content = content;
         this.title=title;
     }
 
@@ -53,7 +53,7 @@ public class Article {
     public String toString() {
         return "Article{" +
                 "id=" + id +
-                ", article='" + article + '\'' +
+                ", article='" + content + '\'' +
                 ", title='" + title + '\'' +
                 ", userId=" + userId +
                 '}';
@@ -65,7 +65,6 @@ public class Article {
             commentList= new ArrayList<>();
         }
         commentList.add(comment);
-        System.out.println(this);
         comment.setArticleId(this);
     }
 }
